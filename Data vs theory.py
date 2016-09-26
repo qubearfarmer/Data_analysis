@@ -244,7 +244,7 @@ def coupled_H(Na, E_l, E_c, E_j_sum, d, phi_squid, phi_ext, Nr, wr, g):
     ope2 = 1.0j*(phi + phi_squid - phi_ext)
     H_f = 4.0*E_c*na**2 + 0.5 * E_l*(phi)** 2 - 0.5*E_j1*(ope1.expm()+(-ope1).expm()) - 0.5*E_j2*(ope2.expm()+(-ope2).expm())
     H_r = wr*(b.dag()*b + 1.0/2)
-    H_c = -g * na * (b.dag + b)
+    H_c = -2*g * na * (b.dag + b)
     H = H_f + H_r + H_c
     return H.eigenenergies()
 
@@ -297,7 +297,7 @@ iState = 0
     # line = plt.plot(current, -spectrum[idx,:]+10.304)  # transition from state (iState)
     # plt.setp(line,linewidth=2.0, linestyle ='--', color = "black", alpha=0.5)
 
-level_num = 4
+
 # iState = 1
 # spectrum = trans_energies(N, E_l, E_c, E_j_sum, d, A_j, A_c, B_coeff, beta_squid, beta_ext, level_num, current, iState)
 # for idx in range(iState,level_num):
@@ -309,11 +309,11 @@ level_num = 4
     # plt.setp(line,linewidth=2.0, linestyle ='-.', color = "red", alpha=0.5)
     
 #Coupled Transition energy calculation here
-N = 50
+N = 40
 Nr = 10
-E_l=0.754748945235
+E_l=0.735773762652
 E_c=0.537375025825
-E_j_sum=22.3248385583
+E_j_sum=22.3
 A_j=3.83424869313e-12
 A_c=1.46689233147e-10
 d=0.185865262485
@@ -322,28 +322,30 @@ beta_ext=-0.0251115059548
 B_coeff = 60
 g=0.0845608058905
 wr = 10.304
-g = 0.0845608
-current = np.linspace(0.0,0.02,1000)
+current = np.linspace(0.02,0.03,100)
+level_num = 7
 
 iState = 0
 spectrum = coupled_trans_energies(N, E_l, E_c, E_j_sum, d, A_j, A_c, B_coeff, beta_squid, beta_ext, level_num, current, iState, Nr, wr, g)
 for idx in range(iState,level_num):
     line = plt.plot(current*1e3, spectrum[idx,:])  # transition from state (iState)
     plt.setp(line,linewidth=1.0, linestyle ='-', color = "black", alpha=0.5)
+    line = plt.plot(current*1e3, spectrum[idx,:]/2)  # transition from state (iState)
+    plt.setp(line,linewidth=1.0, linestyle ='-.', color = "black", alpha=0.9)
 
-iState = 1
-spectrum = coupled_trans_energies(N, E_l, E_c, E_j_sum, d, A_j, A_c, B_coeff, beta_squid, beta_ext, level_num, current, iState, Nr, wr, g)
-for idx in range(iState,level_num):
-    line = plt.plot(current*1e3, spectrum[idx,:])  # transition from state (iState)
-    plt.setp(line,linewidth=1.0, linestyle ='--', color = "red", alpha=0.5)
-
+#
+# iState = 1
+# spectrum = coupled_trans_energies(N, E_l, E_c, E_j_sum, d, A_j, A_c, B_coeff, beta_squid, beta_ext, level_num, current, iState, Nr, wr, g)
+# for idx in range(iState,level_num):
+#     line = plt.plot(current*1e3, spectrum[idx-iState,:])  # transition from state (iState)
+#     plt.setp(line,linewidth=1.0, linestyle ='--', color = "red", alpha=0.5)
 
 #plt.grid("on")
 # plt.xlabel("YOKO I (mA)")
 # plt.ylabel("Freq (GHz)")
 #plt.title(measurement)
-plt.xlim([0,15])
-plt.ylim([8.5,9.5])
+plt.xlim([20,30])
+plt.ylim([6.5,8.5])
 plt.tick_params(labelsize=18)
 # plt.colorbar()
 plt.show()

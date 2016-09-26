@@ -3,10 +3,7 @@ import numpy as np
 from qutip import*
 from matplotlib import pyplot as plt
 import matplotlib.cm as cm
-from matplotlib import rc
-rc('font',**{'family':'sans-serif','sans-serif':['Palatino']})
-rc('text', usetex=True)
-plt.close("all")
+
 
 #####################################################################################
 #####################################################################################
