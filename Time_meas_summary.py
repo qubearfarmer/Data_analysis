@@ -3,14 +3,14 @@ from matplotlib import pyplot as plt
 from qutip import*
 
 ###################################################################################
-directory = 'C:\Data\Fluxonium #10\T1 vs current\\after 20160825'
-measurement = 'T1 fits_all_after thermal cycle_20160825.csv'
+directory = 'G:\\Projects\\Fluxonium\\Data\\Fluxonium #10_python code by Jon\\T1_T2_YOKO_41p5to mA_0to2'
+measurement = 'T1 avg_T2_qubit f(0to2) vs flux_41p5 to 41p77mA.txt'
 path = directory + '\\' + measurement
-data = np.genfromtxt(path, delimiter = ',')
+data = np.genfromtxt(path)
 print data
-t1 = data[:,0]
-flux = data[:,1]
-freq = data[:,2]
+t1 = data[1::,2]
+flux = data[1::,0]
+t2 = data[1::,4]
 
 fig, ax1 = plt.subplots()
 #####################################################################################################################################################################################
@@ -68,27 +68,29 @@ N = 50
 E_l = 0.746959655208
 E_c = 0.547943694372
 E_j_sum = 21.9627179709
-level_num = 2
+level_num = 3
 B_coeff = 60
 A_j = 3.80888914574e-12
 A_c = 1.49982268962e-10
 beta_squid = 0.00378012644185
 beta_ext = 0.341308382441
 d=0.0996032153487
-current = np.linspace(0.04,0.05,1000)
+current = np.linspace(0.041,0.042,100)
 
 
 iState = 0
 spectrum = trans_energies(N, E_l, E_c, E_j_sum, d, A_j, A_c, B_coeff, beta_squid, beta_ext, level_num, current, iState)
 for idx in range(iState,level_num):
-    line = ax1.plot(current*1e3, spectrum[idx,:])  # transition from state (iState)
+    line = ax1.plot(current*1e3+ (41.6813-41.6413), spectrum[idx,:])  # transition from state (iState)
     plt.setp(line,linewidth=1.0, linestyle ='-', color = "black", alpha=0.5)
 
+ax2.set_ylabel('Trans energy (GHz)')
 for tl in ax1.get_yticklabels():
     tl.set_color('k')
 
 ax2 = ax1.twinx()
-ax2.plot(flux*1e3, t1, 'bo')
+ax2.plot(flux, t1, 'bo-')
+ax2.set_ylabel('T1_02 (us)')
 for tl in ax2.get_yticklabels():
     tl.set_color('b')
 ax1.tick_params(labelsize=18)
