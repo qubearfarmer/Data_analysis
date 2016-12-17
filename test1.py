@@ -1,38 +1,43 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider, Button, RadioButtons
+import matplotlib.cm as cm
 from matplotlib import rc
 from matplotlib.ticker import ScalarFormatter, FormatStrFormatter
-from qutip import*
+from qutip import *
+
 plt.figure(figsize=(10, 10))
-# plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
+rc('text', usetex=False)
+ax = plt.gca()
+ax.get_yaxis().get_major_formatter().set_useOffset(False)
 
 directory = 'G:\Projects\Fluxonium\Data\Fluxonium #10_New software'
-measurement = 'Two_tone_spec_YOKO_38.56to38.66mA_Qubit_4.2to5.1GHz_-6dBm_Cav_10.3045GHz_5dBm_IF_0.05GHz_measTime_500ns_avg_20000'
+measurement = 'Two_tone_spec_YOKO_41to43mA_Qubit_3to4GHz_5dBm_Cav_10.3039GHz_8dBm_IF_0.05GHz_measTime_500ns_avg_50000'
 path = directory + '\\' + measurement
 
-#Read data
+# Read data
 current = np.genfromtxt(path + '_CURR.dat')
-current = current[1:-1] - 0.016
+current = current[1::]
 freq = np.genfromtxt(path + '_FREQ.dat')
 freq = freq[1::]
 data = np.genfromtxt(path + '_PHASEMAG.dat')
-phase = data[1::,0] #phase is recorded in rad
-phase = phase#
-mag = data[1::,0]
+phase = data[1::, 0]  # phase is recorded in rad
+phase = phase  #
+mag = data[1::, 0]
 
-Z = np.zeros((len(current),len(freq)))
+# plt.figure(1)
+Z = np.zeros((len(current), len(freq)))
 for idx in range(len(current)):
-    temp = np.unwrap(phase[idx*len(freq):(idx+1)*len(freq)])
-    Z[idx,:] = temp - np.average(temp)
-Z = Z*180/(np.pi)
-Z = Z.transpose()[1:len(freq)-1]
-X,Y = np.meshgrid(current,freq[1:len(freq)-1])
-plt.figure(1)
-plt.pcolormesh(X,Y,Z, cmap= 'GnBu_r', vmin = -4, vmax=-0.5)
-#####################################################################################################################################################################################
-#####################################################################################################################################################################################
+    temp = np.unwrap(phase[idx * len(freq):(idx + 1) * len(freq)])
+    Z[idx, :] = temp - np.average(temp)
+Z = Z * 180 / (np.pi)
+X, Y = np.meshgrid(current - 0.041, freq[0:len(freq) / 2 + 2])
+Z1 = Z.transpose()[0:len(freq) / 2 + 2]
+plt.pcolormesh(X, Y, Z1, cmap='GnBu_r', vmin=-3, vmax=-1.5)
+
+X, Y = np.meshgrid(current - 0.041, freq[len(freq) / 2 + 2:len(freq) - 1])
+Z2 = Z.transpose()[len(freq) / 2 + 2:len(freq) - 1]
+plt.pcolormesh(X, Y, Z2, cmap='GnBu_r', vmin=-4, vmax=1)
 
 # Define constants
 e = 1.602e-19  # Fundamental charge
@@ -119,19 +124,65 @@ A_c = 1.49982268962e-10
 beta_squid = 0.00378012644185
 beta_ext = 0.341308382441
 d = 0.0996032153487
-current = np.linspace(0.0385, 0.0387, 100)
+current = np.linspace(0.0412, 0.0421, 100)
 
 iState = 0
 spectrum = trans_energies(N, E_l, E_c, E_j_sum, d, A_j, A_c, B_coeff, beta_squid, beta_ext, level_num, current, iState)
-for idx in range(iState, level_num):
+for idx in range(iState, 3):
     line = plt.plot(current * 1e3, spectrum[idx, :])  # transition from state (iState)
-    plt.setp(line, linewidth=3.0, linestyle='--', color="black")#, alpha=0.5)
+    plt.setp(line, linewidth=3.0, linestyle='--', color="black")#, alpha=0.2)
+    # line = plt.plot(current, spectrum[idx,:]+10.304)  # transition from state (iState)
+    # plt.setp(line,linewidth=2.0, linestyle ='--', color = "black", alpha=0.5)
+    # line = plt.plot(current, -spectrum[idx,:]+10.304)  # transition from state (iState)
+    # plt.setp(line,linewidth=2.0, linestyle ='--', color = "black", alpha=0.5)
 
-ax = plt.gca()
-ax.get_xaxis().get_major_formatter().set_useOffset(False)
-plt.xlim([38.546, 38.63])
-plt.ylim([4.2,5.1])
-plt.xticks([38.55, 38.59, 38.63])
-plt.yticks([4.2, 4.6, 5.0])
+# iState = 1
+# spectrum = trans_energies(N, E_l, E_c, E_j_sum, d, A_j, A_c, B_coeff, beta_squid, beta_ext, level_num, current, iState)
+# for idx in range(iState,level_num):
+#     line = plt.plot(current*1e3, spectrum[idx-iState,:])  # transition from state (iState)
+#     plt.setp(line,linewidth=1.0, linestyle ='--', color = "red", alpha=0.5)
+#     line = plt.plot(current, spectrum[idx-iState,:]+10.304)  # transition from state (iState)
+#     plt.setp(line,linewidth=2.0, linestyle ='--', color = "red", alpha=0.5)
+#     line = plt.plot(current, -spectrum[idx-iState,:]+10.304)  # transition from state (iState)
+#     plt.setp(line,linewidth=2.0, linestyle ='-.', color = "red", alpha=0.5)
+
+'''
+#Coupled Transition energy calculation and fitting for top spectrum here
+N = 40
+Nr = 10
+E_l=0.735773762652
+E_c=0.537375025825
+E_j_sum=22.3
+A_j=3.83424869313e-12
+A_c=1.46689233147e-10
+d=0.185865262485
+beta_squid=-2.58488114861e-05
+beta_ext=-0.0251115059548
+B_coeff = 60
+g=0.0845608058905
+wr = 10.304
+current = np.linspace(0.02,0.03,100)
+level_num = 7
+
+iState = 0
+spectrum = coupled_trans_energies(N, E_l, E_c, E_j_sum, d, A_j, A_c, B_coeff, beta_squid, beta_ext, level_num, current, iState, Nr, wr, g)
+for idx in range(iState,level_num):
+    line = plt.plot(current*1e3, spectrum[idx,:])  # transition from state (iState)
+    plt.setp(line,linewidth=1.0, linestyle ='-', color = "black", alpha=0.5)
+    line = plt.plot(current*1e3, spectrum[idx,:]/2)  # transition from state (iState)
+    plt.setp(line,linewidth=1.0, linestyle ='-.', color = "black", alpha=0.9)
+
+
+iState = 1
+spectrum = coupled_trans_energies(N, E_l, E_c, E_j_sum, d, A_j, A_c, B_coeff, beta_squid, beta_ext, level_num, current, iState, Nr, wr, g)
+for idx in range(iState,level_num):
+    line = plt.plot(current*1e3, spectrum[idx-iState,:])  # transition from state (iState)
+    plt.setp(line,linewidth=1.0, linestyle ='--', color = "red", alpha=0.5)
+'''
+plt.ylim([3.1, 4.0])
+plt.xlim([41.3,42.1])
+plt.xticks([41.3,41.7, 42.1])
+plt.yticks([3.2,3.6,4])
 plt.tick_params(labelsize=26)
+# plt.colorbar()
 plt.show()

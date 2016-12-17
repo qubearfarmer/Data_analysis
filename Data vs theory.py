@@ -6,17 +6,18 @@ import matplotlib.cm as cm
 from matplotlib import rc
 from matplotlib.ticker import ScalarFormatter, FormatStrFormatter
 from qutip import*
-
+plt.figure(figsize=(20, 10))
+plt.rc('font', family='serif')
 rc('text', usetex=False)
-plt.close("all")
-fig=plt.figure()
+# plt.close("all")
+# fig=plt.figure()
 ax = plt.gca()
 ax.get_yaxis().get_major_formatter().set_useOffset(False)
 
 
 #####################################################################################################################################################################################
 #####################################################################################################################################################################################
-'''
+# '''
 #####################################################################################################################################################################################
 #####################################################################################################################################################################################
 #Plasmon line scan
@@ -108,7 +109,7 @@ for idx in range(len(Current)-1):
         Z = RawData[idx:idx+11].transpose()
         I = Current[idx:idx+11]
         X, Y = np.meshgrid(I, f)
-        plt.pcolormesh(X, Y, Z, cmap=cm.GnBu_r, vmin =-5, vmax = 0)
+        plt.pcolormesh(X, Y, Z, cmap=cm.GnBu_r, vmin =-6, vmax = -2)
 
 ########################################################################
 directory = 'C:\Data\Fluxonium #10'
@@ -127,7 +128,7 @@ for idx in range(len(Current)-1):
         Z = RawData[idx:idx+11].transpose()
         I = Current[idx:idx+11]
         X, Y = np.meshgrid(I, f)
-        plt.pcolormesh(X, Y, Z, cmap=cm.GnBu_r, vmin =-5, vmax = 0)
+        plt.pcolormesh(X, Y, Z, cmap=cm.GnBu_r, vmin =-4, vmax = -1)
 #Small scan
 directory = 'C:\Data\Fluxonium #10'
 measurement = 'S21_43to44mA_currentMode_qubit_2p5to3p2GHz_0dBm_cav5dBm_avg50K_pulse(test)'
@@ -140,7 +141,7 @@ Freq = np.genfromtxt(path_freq, delimiter =',')/1e9
 I = np.genfromtxt(path_current, delimiter =',')*1e3
 Z = RawData.transpose()
 X, Y = np.meshgrid(I,Freq)
-plt.pcolormesh(X, Y, Z, cmap=cm.GnBu_r, vmin = -5 , vmax = 0)
+plt.pcolormesh(X, Y, Z, cmap=cm.GnBu_r, vmin = -4 , vmax = -1)
 ########################################################################
 #Small scan
 directory = 'C:\Data\Fluxonium #10'
@@ -154,7 +155,7 @@ Freq = np.genfromtxt(path_freq, delimiter =',')/1e9
 I = np.genfromtxt(path_current, delimiter =',')*1e3
 Z = RawData.transpose()
 X, Y = np.meshgrid(I,Freq)
-plt.pcolormesh(X, Y, Z, cmap=cm.GnBu_r, vmin = -5 , vmax = 0)
+plt.pcolormesh(X, Y, Z, cmap=cm.GnBu_r, vmin = -4 , vmax = -1)
 ########################################################################
 #Blue side band
 directory = 'C:\Data\Fluxonium #10'
@@ -184,7 +185,7 @@ Z = RawData.transpose()
 X, Y = np.meshgrid(I,Freq)
 plt.pcolormesh(X, Y, Z, cmap=cm.RdBu_r, vmin = -5 , vmax = 5)
 
-'''
+# '''
 #####################################################################################################################################################################################
 #####################################################################################################################################################################################
 #Plotting data taken with new software
@@ -202,14 +203,19 @@ phase = data[1::,0] #phase is recorded in rad
 phase = phase#
 mag = data[1::,0]
 
+# plt.figure(1)
 Z = np.zeros((len(current),len(freq)))
 for idx in range(len(current)):
     temp = np.unwrap(phase[idx*len(freq):(idx+1)*len(freq)])
     Z[idx,:] = temp - np.average(temp)
 Z = Z*180/(np.pi)
-X,Y = np.meshgrid(current,freq)
-plt.figure(1)
-plt.pcolormesh(X,Y,Z.transpose(), cmap= 'GnBu_r', vmin = -5, vmax=0, alpha = 1)
+X,Y = np.meshgrid(current-0.041,freq[0:len(freq)/2+2])
+Z1= Z.transpose()[0:len(freq)/2+2]
+plt.pcolormesh(X,Y,Z1, cmap= 'GnBu_r', vmin = -3, vmax=-1.5)
+
+X,Y = np.meshgrid(current-0.041,freq[len(freq)/2+2:len(freq)-1])
+Z2= Z.transpose()[len(freq)/2+2:len(freq)-1]
+plt.pcolormesh(X,Y,Z2, cmap= 'GnBu_r', vmin = -4, vmax=1)
 ########################################################################
 directory = 'G:\Projects\Fluxonium\Data\Fluxonium #10_New software'
 measurement = 'Two_tone_spec_YOKO_38.1to40mA_Qubit_3.5to5GHz_5dBm_Cav_10.3039GHz_8dBm_IF_0.05GHz_measTime_500ns_avg_25000'
@@ -217,7 +223,7 @@ path = directory + '\\' + measurement
 
 #Read data
 current = np.genfromtxt(path + '_CURR.dat')
-current = current[1::]
+current = current[1::]-0.027
 freq = np.genfromtxt(path + '_FREQ.dat')
 freq = freq[1::]
 data = np.genfromtxt(path + '_PHASEMAG.dat')
@@ -230,9 +236,36 @@ for idx in range(len(current)):
     temp = np.unwrap(phase[idx*len(freq):(idx+1)*len(freq)])
     Z[idx,:] = temp - np.average(temp)
 Z = Z*180/(np.pi)
-X,Y = np.meshgrid(current,freq)
+Z = Z.transpose()[1:len(freq)-1]
+X,Y = np.meshgrid(current,freq[1:len(freq)-1])
 plt.figure(1)
-plt.pcolormesh(X,Y,Z.transpose(), cmap= 'GnBu_r', vmin = -5, vmax=0, alpha = 1)
+plt.pcolormesh(X,Y,Z, cmap= 'GnBu_r', vmin = -4, vmax=-1)
+#####################################################################
+
+# directory = 'G:\Projects\Fluxonium\Data\Fluxonium #10_New software'
+# measurement = 'Two_tone_spec_YOKO_38to40mA_Qubit_3.5to5GHz_10dBm_Cav_10.3045GHz_5dBm_IF_0.05GHz_measTime_500ns_avg_50000'
+# path = directory + '\\' + measurement
+
+#Read data
+# current = np.genfromtxt(path + '_CURR.dat')
+# current = current[1::]-0.027
+# freq = np.genfromtxt(path + '_FREQ.dat')
+# freq = freq[1::]
+# data = np.genfromtxt(path + '_PHASEMAG.dat')
+# phase = data[1::,0] #phase is recorded in rad
+# phase = phase#
+# mag = data[1::,0]
+#
+# Z = np.zeros((len(current),len(freq)))
+# for idx in range(len(current)):
+#     temp = np.unwrap(phase[idx*len(freq):(idx+1)*len(freq)])
+#     Z[idx,:] = temp - np.average(temp)
+# Z = Z*180/(np.pi)
+# Z = Z.transpose()[1:len(freq)-1]
+# X,Y = np.meshgrid(current,freq[1:len(freq)-1])
+# plt.figure(1)
+# plt.pcolormesh(X,Y,Z, cmap= 'GnBu_r', vmin = -4, vmax=-1)
+
 #####################################################################################################################################################################################
 #####################################################################################################################################################################################
 
@@ -310,14 +343,14 @@ A_c = 1.49982268962e-10
 beta_squid = 0.00378012644185
 beta_ext = 0.341308382441
 d=0.0996032153487
-current = np.linspace(0.03,0.05,1000)
+current = np.linspace(0.038,0.047,1000)
 
 
 iState = 0
 spectrum = trans_energies(N, E_l, E_c, E_j_sum, d, A_j, A_c, B_coeff, beta_squid, beta_ext, level_num, current, iState)
-for idx in range(iState,level_num):
-    line = plt.plot(current*1e3 + (41.6713-41.6413), spectrum[idx,:])  # transition from state (iState)
-    plt.setp(line,linewidth=1.0, linestyle ='-', color = "black", alpha=0.5)
+for idx in range(iState,3):
+    line = plt.plot(current*1e3, spectrum[idx,:])  # transition from state (iState)
+    plt.setp(line,linewidth=1.0, linestyle ='-', color = "black", alpha=0.2)
     # line = plt.plot(current, spectrum[idx,:]+10.304)  # transition from state (iState)
     # plt.setp(line,linewidth=2.0, linestyle ='--', color = "black", alpha=0.5)
     # line = plt.plot(current, -spectrum[idx,:]+10.304)  # transition from state (iState)
@@ -368,12 +401,17 @@ for idx in range(iState,level_num):
     plt.setp(line,linewidth=1.0, linestyle ='--', color = "red", alpha=0.5)
 '''
 # plt.grid("on")
-plt.xlabel("YOKO I (mA)")
-plt.ylabel("Freq (GHz)")
+# plt.xlabel("YOKO I (mA)")
+# plt.ylabel("Freq (GHz)")
 #plt.title(measurement)
-# plt.xlim([20,30])
-# plt.ylim([6.5,8.5])
-plt.tick_params(labelsize=18)
+# plt.xlim([38.3,46.7])
+# plt.ylim([2,5])
+# plt.tick_params(labelsize=18)
+# plt.xlim([38.546, 38.63])
+# plt.ylim([4.2,5.1])
+plt.xlim([38.3,46.7])
+plt.ylim([2,5])
+plt.tick_params(labelsize=16)
 # plt.colorbar()
 plt.show()
 

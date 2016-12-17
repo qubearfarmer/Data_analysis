@@ -3,8 +3,8 @@ from matplotlib import pyplot as plt
 
 
 #File path
-directory = 'D:\Data\Fluxonium #10_New software'
-measurement = 'Two tone spec_YOKO41mA_46mA_Qubit2p5 to 4GHz 5dBm_Cav 10p304GHz 5dBm'
+directory = 'G:\Projects\Fluxonium\Data\Fluxonium #10_New software'
+measurement = 'Two_tone_spec_YOKO_38to40mA_Qubit_3.5to5GHz_10dBm_Cav_10.3045GHz_5dBm_IF_0.05GHz_measTime_500ns_avg_50000'
 path = directory + '\\' + measurement
 
 #Read data
