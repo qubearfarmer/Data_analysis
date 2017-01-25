@@ -12,13 +12,13 @@ def T1_func(x,a,b,c,d):
     return a*np.exp(-(x-c)/b) + d
 
 #Directory for reading data
-directory = "G:\Projects\Fluxonium\Data\Fluxonium #10_python code by Jon\T1_T2_(0to1)_YOKO_38p5to38p76mA\T1_T2_(0to1)_YOKO_38p68mA"
-measurement = 't1_pulse_3.800e9_653'
+directory = "G:\Projects\Fluxonium\Data\Fluxonium #10_python code by Jon\T1_T2_(0to1)_YOKO_43p75to45p4mA\T1_T2_YOKO_45p4mA\T1s"
+measurement = 'generic_sequence_84'
 
 #Information to save data
-current_uncorr = 38.68
-current = 38.663
-freq = 3.8
+current_uncorr = 45.4
+current = 45.361
+freq = 1.558
 fname = 'T1_T1err_'+str(current_uncorr)+'mA.csv'
 #Optional: print flux here to double check
 print str(current_uncorr) +'mA'
@@ -27,7 +27,7 @@ print str(current_uncorr) +'mA'
 path = directory + '\\' + measurement
 time = np.genfromtxt(path+'_time0.csv')
 phase_avg = np.zeros(len(time))
-T1_guess = 1500e-6 #Provide guess here
+T1_guess = 100e-6 #Provide guess here
 count = 0
 T1_array = []
 T1_err_array = []
@@ -37,7 +37,7 @@ for idx in range(0,10): #can change the range and indices here
     phase = phase - np.min(phase)
     guessA = np.max(phase)-np.min(phase)
     guess =[guessA, T1_guess, 0, 0]
-    if guessA < 0.3 : #Change as necessary. Observation of the raw data would suffice in determining the threshold.
+    if guessA < 1: #Change as necessary. Observation of the raw data would suffice in determining the threshold.
         continue
     try:
         popt,pcov = curve_fit(T1_func, time*1e-9, phase, guess)

@@ -17,7 +17,7 @@ path = directory + '\\' + measurement
 
 # Read data
 current = np.genfromtxt(path + '_CURR.dat')
-current = current[1::]
+current = current[1::]-0.04
 freq = np.genfromtxt(path + '_FREQ.dat')
 freq = freq[1::]
 data = np.genfromtxt(path + '_PHASEMAG.dat')
@@ -31,11 +31,11 @@ for idx in range(len(current)):
     temp = np.unwrap(phase[idx * len(freq):(idx + 1) * len(freq)])
     Z[idx, :] = temp - np.average(temp)
 Z = Z * 180 / (np.pi)
-X, Y = np.meshgrid(current - 0.041, freq[0:len(freq) / 2 + 2])
+X, Y = np.meshgrid(current, freq[0:len(freq) / 2 + 2])
 Z1 = Z.transpose()[0:len(freq) / 2 + 2]
 plt.pcolormesh(X, Y, Z1, cmap='GnBu_r', vmin=-3, vmax=-1.5)
 
-X, Y = np.meshgrid(current - 0.041, freq[len(freq) / 2 + 2:len(freq) - 1])
+X, Y = np.meshgrid(current, freq[len(freq) / 2 + 2:len(freq) - 1])
 Z2 = Z.transpose()[len(freq) / 2 + 2:len(freq) - 1]
 plt.pcolormesh(X, Y, Z2, cmap='GnBu_r', vmin=-4, vmax=1)
 
@@ -113,17 +113,18 @@ def coupled_trans_energies(N, E_l, E_c, E_j_sum, d, A_j, A_c, B_coeff, beta_squi
 
 ########################################################################
 # Fitting for bottom spectrum
-N = 50
-E_l = 0.746959655208
-E_c = 0.547943694372
-E_j_sum = 21.9627179709
-level_num = 5
+N=50
+E_l=0.722729827116
+E_c=0.552669197076
+E_j_sum=17.61374383
+A_j=4.76321410213e-12
+A_c=1.50075181762e-10
+d=0.125005274368
+beta_squid=0.129912406349
+beta_ext=0.356925557542
+
 B_coeff = 60
-A_j = 3.80888914574e-12
-A_c = 1.49982268962e-10
-beta_squid = 0.00378012644185
-beta_ext = 0.341308382441
-d = 0.0996032153487
+level_num = 5
 current = np.linspace(0.0412, 0.0421, 100)
 
 iState = 0

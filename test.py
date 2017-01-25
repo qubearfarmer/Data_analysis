@@ -14,7 +14,7 @@ path = directory + '\\' + measurement
 
 #Read data
 current = np.genfromtxt(path + '_CURR.dat')
-current = current[1:-1] - 0.016
+current = current[1:-1] - 0.037
 freq = np.genfromtxt(path + '_FREQ.dat')
 freq = freq[1::]
 data = np.genfromtxt(path + '_PHASEMAG.dat')
@@ -109,17 +109,18 @@ def coupled_trans_energies(N, E_l, E_c, E_j_sum, d, A_j, A_c, B_coeff, beta_squi
 ########################################################################
 # Fitting for bottom spectrum
 N = 50
-E_l = 0.746959655208
-E_c = 0.547943694372
-E_j_sum = 21.9627179709
-level_num = 5
-B_coeff = 60
-A_j = 3.80888914574e-12
-A_c = 1.49982268962e-10
-beta_squid = 0.00378012644185
-beta_ext = 0.341308382441
-d = 0.0996032153487
+E_l=0.722729827116
+E_c=0.552669197076
+E_j_sum=17.61374383
+A_j=4.76321410213e-12
+A_c=1.50075181762e-10
+d=0.125005274368
+beta_squid=0.129912406349
+beta_ext=0.356925557542
+
 current = np.linspace(0.0385, 0.0387, 100)
+B_coeff = 60
+level_num = 5
 
 iState = 0
 spectrum = trans_energies(N, E_l, E_c, E_j_sum, d, A_j, A_c, B_coeff, beta_squid, beta_ext, level_num, current, iState)
@@ -129,9 +130,9 @@ for idx in range(iState, level_num):
 
 ax = plt.gca()
 ax.get_xaxis().get_major_formatter().set_useOffset(False)
-plt.xlim([38.546, 38.63])
+plt.xlim([38.523, 38.606])
 plt.ylim([4.2,5.1])
-plt.xticks([38.55, 38.59, 38.63])
+plt.xticks([38.55, 38.6])
 plt.yticks([4.2, 4.6, 5.0])
 plt.tick_params(labelsize=26)
 plt.show()
