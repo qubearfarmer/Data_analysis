@@ -11,7 +11,7 @@ C_sum = (CJ + C_shunt)*1e-15
 EC = e**2/(2*C_sum)/h
 print ('Charging energy: ' +str(round(EC*1e-9,4)) +' GHz')
 
-L = 200e-9 #nH
+L = 1.65e-9 #nH
 phi_o = h/(2*e*2*np.pi)
 EL = phi_o**2/L/h
 print ('Inductive energy: ' +str(round(EL*1e-9,4))+' GHz')
